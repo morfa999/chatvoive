@@ -39,23 +39,7 @@ function Bg() {
   </>);
 }
 
-/* ═══ Segmented control ═══ */
-function Seg({ items, value, onChange }: { items: string[]; value: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{display:"flex",background:"var(--seg-bg)",borderRadius:10,padding:2,gap:0}}>
-      {items.map(v=>(
-        <button key={v} onClick={()=>onChange(v)} style={{
-          flex:1,padding:"8px 4px",borderRadius:8,border:"none",cursor:"pointer",
-          fontSize:13,fontWeight:value===v?600:400,
-          background:value===v?"var(--seg-active)":"transparent",
-          color:value===v?"var(--t1)":"var(--t3)",
-          boxShadow:value===v?"0 1px 3px rgba(0,0,0,.08)":"none",
-          transition:"all .2s",
-        }}>{v}</button>
-      ))}
-    </div>
-  );
-}
+
 
 /* ═══ Waves ═══ */
 function Waves({on}:{on:boolean}) {
@@ -87,11 +71,7 @@ export default function Home(){
   const [them,setThem]=useState("");
   const [toast,setToast]=useState("");
   const [pSpk,setPSpk]=useState(false);
-  const [sheet,setSheet]=useState(false);
-  const [myG,setMyG]=useState("Парень");
-  const [theirG,setTheirG]=useState("Все");
-  const [myA,setMyA]=useState("18-24");
-  const [theirA,setTheirA]=useState("Все");
+
   const [swipeX,setSwipeX]=useState(0);
   const [swiping,setSwiping]=useState(false);
   const swipeStart=useRef(0);
@@ -141,7 +121,7 @@ export default function Home(){
 
   useEffect(()=>{strm.current?.getAudioTracks().forEach(t=>{t.enabled=!mut;});sock.current?.emit("mute",{m:mut});},[mut]);
 
-  const find=()=>{setSheet(false);sock.current?.emit("find",{myG,theirG,myA,theirA});};
+  const find=()=>{sock.current?.emit("find");};
   const accept=()=>{ring.stop();setSwipeX(0);sock.current?.emit("accept",{rid:rid.current});};
   const decline=()=>{ring.stop();setSwipeX(0);sock.current?.emit("decline",{rid:rid.current});setSt("idle");rid.current=null;};
   const end=()=>{sock.current?.emit("end");killPC();stopTm();setTm(0);setSt("idle");rid.current=null;setPmut(false);setPSpk(false);};
@@ -180,43 +160,7 @@ export default function Home(){
       {/* toast */}
       {toast&&<div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"12px 24px",fontSize:14,fontWeight:600,color:"var(--t1)",zIndex:30,animation:"fadeUp .25s ease"}}>{toast}</div>}
 
-      {/* ═══ BOTTOM SHEET ═══ */}
-      {sheet&&(
-        <div style={{position:"fixed",inset:0,zIndex:50,display:"flex",flexDirection:"column",justifyContent:"flex-end"}} onClick={()=>setSheet(false)}>
-          <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,.4)"}}/>
-          <div style={{position:"relative",background:"var(--sheet-bg)",borderRadius:"24px 24px 0 0",padding:"12px 24px 34px",maxHeight:"85vh",overflow:"auto",animation:"slideUp .3s ease"}} onClick={e=>e.stopPropagation()}>
-            {/* handle */}
-            <div style={{width:36,height:4,borderRadius:2,background:"var(--border)",margin:"0 auto 20px"}}/>
 
-
-            <div style={{marginBottom:20}}>
-              <p style={{fontSize:13,fontWeight:600,color:"var(--t3)",marginBottom:8}}>Ваш пол</p>
-              <Seg items={["Парень","Девушка"]} value={myG} onChange={setMyG}/>
-            </div>
-
-            <div style={{marginBottom:20}}>
-              <p style={{fontSize:13,fontWeight:600,color:"var(--t3)",marginBottom:8}}>Ваш возраст</p>
-              <Seg items={["18-24","25-34","35-44","45+"]} value={myA} onChange={setMyA}/>
-            </div>
-
-            <div style={{width:"100%",height:1,background:"var(--border)",margin:"8px 0 20px"}}/>
-
-            <div style={{marginBottom:20}}>
-              <p style={{fontSize:13,fontWeight:600,color:"var(--t3)",marginBottom:8}}>Ищу пол</p>
-              <Seg items={["Все","Парень","Девушка"]} value={theirG} onChange={setTheirG}/>
-            </div>
-
-            <div style={{marginBottom:28}}>
-              <p style={{fontSize:13,fontWeight:600,color:"var(--t3)",marginBottom:8}}>Ищу возраст</p>
-              <Seg items={["Все","18-24","25-34","35-44","45+"]} value={theirA} onChange={setTheirA}/>
-            </div>
-
-            <button onClick={find} onMouseDown={press} onMouseUp={rel} style={{width:"100%",height:54,borderRadius:16,border:"none",background:"var(--green)",color:"#fff",fontSize:17,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:10,transition:"transform .15s"}}>
-              <Phone s={20}/> Найти собеседника
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ═══ MAIN CENTER ═══ */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:2,width:"100%",padding:"0 24px",maxWidth:420}} key={st}>
@@ -229,7 +173,7 @@ export default function Home(){
             </div>
             <p style={{fontSize:13,color:"var(--t3)",letterSpacing:".08em",textTransform:"uppercase",marginBottom:4}}>Вы</p>
             <p style={{fontSize:"clamp(18px,5vw,24px)",fontWeight:700,color:"var(--t1)",marginBottom:"clamp(28px,6vh,48px)"}}>{me||"Аноним"}</p>
-            <button onClick={()=>setSheet(true)} onMouseDown={press} onMouseUp={rel} style={{...rbtn("var(--green)",76),width:"clamp(68px,16vw,84px)",height:"clamp(68px,16vw,84px)"}}>
+            <button onClick={find} onMouseDown={press} onMouseUp={rel} style={{...rbtn("var(--green)",76),width:"clamp(68px,16vw,84px)",height:"clamp(68px,16vw,84px)"}}>
               <Phone s={32}/>
             </button>
             <p style={{fontSize:14,color:"var(--t2)",marginTop:16,fontWeight:500}}>Найти собеседника</p>
@@ -243,7 +187,7 @@ export default function Home(){
               <div style={{width:26,height:26,borderRadius:"50%",border:"2.5px solid var(--accent)",borderTopColor:"transparent",animation:"spin .7s linear infinite"}}/>
             </div>
             <p style={{fontSize:"clamp(18px,5vw,22px)",fontWeight:700,color:"var(--t1)",marginBottom:8}}>Ищем собеседника</p>
-            <p style={{fontSize:14,color:"var(--t3)",marginBottom:36,textAlign:"center"}}>{myG}, {myA}</p>
+            <p style={{fontSize:14,color:"var(--t3)",marginBottom:36,textAlign:"center"}}>случайный собеседник</p>
             <div style={{display:"flex",gap:6,marginBottom:36}}>
               {[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:"50%",background:"var(--accent)",animation:`dotPulse 1.4s ease-in-out ${i*.16}s infinite`}}/>)}
             </div>
