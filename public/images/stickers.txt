@@ -1,0 +1,25 @@
+Список стикеров для фона (PNG файлы в папке /public/images/):
+
+br1.png  — молния / lightning bolt
+br2.png  — звезда / star
+br3.png  — сердце / heart
+br4.png  — огонь / fire
+br5.png  — корона / crown
+br6.png  — алмаз / diamond
+br7.png  — череп / skull
+br8.png  — ракета / rocket
+br9.png  — наушники / headphones
+br10.png — микрофон / microphone
+br11.png — нота / music note
+br12.png — глаз / eye
+br13.png — смайл / smile face
+br14.png — бомба / bomb
+br15.png — кулак / fist
+br16.png — волна / wave
+br17.png — планета / planet
+br18.png — кристалл / crystal
+br19.png — крылья / wings
+br20.png — пламя / flame
+
+Замените эти файлы на свои PNG стикеры (рекомендуемый размер 80-120px, прозрачный фон).
+Пока стикеры отрисовываются как inline SVG на фоне.
