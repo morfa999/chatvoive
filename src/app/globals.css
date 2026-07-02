@@ -1,48 +1,70 @@
 @import "tailwindcss";
 
-/* ── Light theme (default) ─────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME (default) — frosted white matte
+   ═══════════════════════════════════════════════════════════ */
 :root {
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --card-border: rgba(0,0,0,0.06);
-  --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 40px rgba(0,0,0,0.06);
-  --text-1: #1d1d1f;
-  --text-2: #6e6e73;
-  --text-3: #aeaeb2;
-  --accent: #007aff;
-  --accent-bg: rgba(0,122,255,0.08);
-  --green: #34c759;
-  --green-bg: rgba(52,199,89,0.1);
-  --red: #ff3b30;
-  --red-bg: rgba(255,59,48,0.08);
-  --divider: rgba(0,0,0,0.06);
-  --matte: rgba(0,0,0,0.03);
-  --ring-pulse: rgba(0,122,255,0.15);
-  --avatar-bg: rgba(0,0,0,0.04);
-}
-
-/* ── Dark theme ────────────────────────────────────────── */
-[data-theme="dark"] {
-  --bg: #0a0a0a;
-  --card: #161616;
-  --card-border: rgba(255,255,255,0.06);
-  --card-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 40px rgba(0,0,0,0.4);
-  --text-1: #f5f5f7;
-  --text-2: #a1a1a6;
-  --text-3: #48484a;
-  --accent: #0a84ff;
-  --accent-bg: rgba(10,132,255,0.12);
+  --bg: #f0f0f3;
+  --bg-sub: #e8e8ed;
+  --card: rgba(255,255,255,0.72);
+  --card-solid: #ffffff;
+  --card-border: rgba(0,0,0,0.05);
+  --card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04), 0 12px 48px rgba(0,0,0,0.06);
+  --text-1: #1a1a1f;
+  --text-2: #6b6b76;
+  --text-3: #a0a0ab;
+  --text-4: #c8c8d0;
+  --accent: #5856d6;
+  --accent-soft: rgba(88,86,214,0.08);
+  --accent-med: rgba(88,86,214,0.15);
+  --accent-glow: rgba(88,86,214,0.25);
   --green: #30d158;
-  --green-bg: rgba(48,209,88,0.12);
+  --green-soft: rgba(48,209,88,0.1);
+  --green-glow: rgba(48,209,88,0.3);
   --red: #ff453a;
-  --red-bg: rgba(255,69,58,0.12);
-  --divider: rgba(255,255,255,0.06);
-  --matte: rgba(255,255,255,0.03);
-  --ring-pulse: rgba(10,132,255,0.2);
-  --avatar-bg: rgba(255,255,255,0.04);
+  --red-soft: rgba(255,69,58,0.08);
+  --red-glow: rgba(255,69,58,0.25);
+  --amber: #ff9f0a;
+  --divider: rgba(0,0,0,0.06);
+  --glass-blur: 40px;
+  --gradient-1: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(88,86,214,0.08), transparent 70%);
+  --gradient-2: radial-gradient(ellipse 60% 50% at 80% 100%, rgba(48,209,88,0.05), transparent 70%);
+  --gradient-3: radial-gradient(ellipse 50% 40% at 10% 60%, rgba(255,159,10,0.04), transparent 60%);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ═══════════════════════════════════════════════════════════
+   DARK THEME — deep black glass
+   ═══════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg: #000000;
+  --bg-sub: #0a0a0c;
+  --card: rgba(22,22,28,0.65);
+  --card-solid: #16161c;
+  --card-border: rgba(255,255,255,0.06);
+  --card-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.4), 0 16px 64px rgba(0,0,0,0.5);
+  --text-1: #f5f5f7;
+  --text-2: #8e8e93;
+  --text-3: #48484a;
+  --text-4: #2c2c2e;
+  --accent: #7b78ff;
+  --accent-soft: rgba(123,120,255,0.1);
+  --accent-med: rgba(123,120,255,0.18);
+  --accent-glow: rgba(123,120,255,0.3);
+  --green: #30d158;
+  --green-soft: rgba(48,209,88,0.12);
+  --green-glow: rgba(48,209,88,0.35);
+  --red: #ff453a;
+  --red-soft: rgba(255,69,58,0.12);
+  --red-glow: rgba(255,69,58,0.3);
+  --amber: #ff9f0a;
+  --divider: rgba(255,255,255,0.06);
+  --glass-blur: 60px;
+  --gradient-1: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(123,120,255,0.12), transparent 70%);
+  --gradient-2: radial-gradient(ellipse 60% 50% at 80% 100%, rgba(48,209,88,0.06), transparent 70%);
+  --gradient-3: radial-gradient(ellipse 50% 40% at 10% 60%, rgba(255,159,10,0.04), transparent 60%);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
@@ -50,60 +72,65 @@ html, body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text-1);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background 0.3s ease, color 0.3s ease;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.5s cubic-bezier(.4,0,.2,1), color 0.5s;
 }
 
-/* ── Keyframes ─────────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ═══ Animations ═══════════════════════════════════════════ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes fadeScale {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.92); }
   to   { opacity: 1; transform: scale(1); }
 }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50%      { transform: scale(1.15); opacity: 0; }
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
-@keyframes ring {
-  0%   { transform: rotate(0deg); }
-  5%   { transform: rotate(15deg); }
-  10%  { transform: rotate(-15deg); }
-  15%  { transform: rotate(12deg); }
-  20%  { transform: rotate(-12deg); }
-  25%  { transform: rotate(8deg); }
-  30%  { transform: rotate(-8deg); }
-  35%  { transform: rotate(0deg); }
-  100% { transform: rotate(0deg); }
+@keyframes shake-phone {
+  0%, 100% { transform: rotate(0deg); }
+  4%  { transform: rotate(15deg); }
+  8%  { transform: rotate(-13deg); }
+  12% { transform: rotate(10deg); }
+  16% { transform: rotate(-8deg); }
+  20% { transform: rotate(5deg); }
+  24% { transform: rotate(0deg); }
 }
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40%           { transform: scale(1); }
+@keyframes dot-pulse {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.6); }
+  40%           { opacity: 1; transform: scale(1); }
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-@keyframes callPulse {
-  0%   { box-shadow: 0 0 0 0 var(--ring-pulse); }
-  70%  { box-shadow: 0 0 0 20px transparent; }
+@keyframes orbit-glow {
+  0%   { box-shadow: 0 0 0 0 var(--accent-glow); }
+  70%  { box-shadow: 0 0 0 24px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10% { transform: translateX(-4px) rotate(-1deg); }
-  20% { transform: translateX(4px) rotate(1deg); }
-  30% { transform: translateX(-4px) rotate(-1deg); }
-  40% { transform: translateX(4px) rotate(1deg); }
-  50% { transform: translateX(-2px); }
-  60% { transform: translateX(2px); }
-  70% { transform: translateX(0); }
-}
-@keyframes waveBar {
+@keyframes wave {
   0%, 100% { height: 4px; }
-  50%      { height: var(--h, 16px); }
+  50%      { height: var(--h); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.06); opacity: 0.8; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 ::-webkit-scrollbar { width: 0; }

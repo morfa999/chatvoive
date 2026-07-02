@@ -1,67 +1,76 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, type CSSProperties } from "react";
 import { io, Socket } from "socket.io-client";
 
 /* ═══════════════════════════════════════════════════════════
-   SVG Icons — no emoji, all inline SVG
+   ICONS — pure SVG, zero emoji
    ═══════════════════════════════════════════════════════════ */
 
-function Ic({ d, size = 20, cls = "", fill = false }: { d: string; size?: number; cls?: string; fill?: boolean }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24"
-      fill={fill ? "currentColor" : "none"}
-      stroke={fill ? "none" : "currentColor"}
-      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-      className={cls}>
-      <path d={d} />
-    </svg>
-  );
-}
-
-const icons = {
-  mic: "M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8",
-  micOff: "M1 1l22 22M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V5a3 3 0 0 0-5.94-.6M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .38-.03.75-.08 1.12M12 19v4M8 23h8",
-  phone: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z",
-  phoneOff: "M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67M1 1l22 22M4.22 4.22A19.86 19.86 0 0 0 2.12 4.18 2 2 0 0 0 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91",
-  sun: "M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42",
-  moon: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z",
-  search: "M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM21 21l-4.35-4.35",
-  x: "M18 6L6 18M6 6l12 12",
-  check: "M20 6L9 17l-5-5",
-  users: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
-};
-
-const SunMoon = ({ dark, size = 18 }: { dark: boolean; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    {dark ? (
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    ) : (
-      <>
-        <circle cx="12" cy="12" r="5" />
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-      </>
-    )}
+const I = ({ children, size = 20, cls = "" }: { children: React.ReactNode; size?: number; cls?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={cls}
+    style={{ flexShrink: 0 }}>
+    {children}
   </svg>
 );
 
-const PhoneIcon = ({ size = 24 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d={icons.phone} />
-  </svg>
+const MicSvg = ({ size = 20, cls = "" }: { size?: number; cls?: string }) => (
+  <I size={size} cls={cls}>
+    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <line x1="12" y1="19" x2="12" y2="22" />
+    <line x1="8" y1="22" x2="16" y2="22" />
+  </I>
 );
 
-const PhoneDownIcon = ({ size = 24 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+const MicOffSvg = ({ size = 20, cls = "" }: { size?: number; cls?: string }) => (
+  <I size={size} cls={cls}>
+    <line x1="1" y1="1" x2="23" y2="23" />
+    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V5a3 3 0 0 0-5.94-.6" />
+    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .38-.03.75-.08 1.12" />
+    <line x1="12" y1="19" x2="12" y2="22" />
+    <line x1="8" y1="22" x2="16" y2="22" />
+  </I>
+);
+
+const PhoneSvg = ({ size = 24, cls = "" }: { size?: number; cls?: string }) => (
+  <I size={size} cls={cls}>
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+  </I>
+);
+
+const EndCallSvg = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
     <path d="M23.71 16.67C20.66 13.78 16.54 12 12 12S3.34 13.78.29 16.67a1 1 0 0 0-.29.72 1 1 0 0 0 .31.72l2.83 2.83a1 1 0 0 0 1.41 0l2.83-2.83a1 1 0 0 0 0-1.41L5.9 15.22A9.94 9.94 0 0 1 12 13.5c2.25 0 4.33.66 6.1 1.72l-1.48 1.48a1 1 0 0 0 0 1.41l2.83 2.83a1 1 0 0 0 1.41 0l2.83-2.83a1 1 0 0 0 .31-.72 1 1 0 0 0-.29-.72z"/>
   </svg>
 );
 
+const SunSvg = ({ size = 16 }: { size?: number }) => (
+  <I size={size}>
+    <circle cx="12" cy="12" r="5" />
+    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+  </I>
+);
+
+const MoonSvg = ({ size = 16 }: { size?: number }) => (
+  <I size={size}>
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </I>
+);
+
+const SkipSvg = ({ size = 20 }: { size?: number }) => (
+  <I size={size}>
+    <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none" />
+    <line x1="19" y1="5" x2="19" y2="19" />
+  </I>
+);
+
 /* ═══════════════════════════════════════════════════════════
-   Constants
+   CONSTANTS
    ═══════════════════════════════════════════════════════════ */
 
-const CATEGORIES = ["Random", "Music", "Gaming", "Tech", "Chill"];
+const CATEGORIES = ["Random", "Music", "Gaming", "Tech", "Chill", "Deep Talk"];
 
 const ICE = {
   iceServers: [
@@ -73,66 +82,73 @@ const ICE = {
 type State = "idle" | "searching" | "incoming" | "calling" | "connected";
 
 /* ═══════════════════════════════════════════════════════════
-   Ringtone – Web Audio API beeps
+   RINGTONE (Web Audio beeps)
    ═══════════════════════════════════════════════════════════ */
 
 function useRingtone() {
-  const ctxRef = useRef<AudioContext | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const ctx = useRef<AudioContext | null>(null);
+  const iv = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const playRing = useCallback(() => {
-    stopRing();
+  const stop = useCallback(() => {
+    if (iv.current) { clearInterval(iv.current); iv.current = null; }
+    if (ctx.current) { ctx.current.close().catch(() => {}); ctx.current = null; }
+  }, []);
+
+  const play = useCallback(() => {
+    stop();
     try {
-      const ctx = new AudioContext();
-      ctxRef.current = ctx;
-
-      const playBeep = () => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g);
-        g.connect(ctx.destination);
-        o.frequency.setValueAtTime(880, ctx.currentTime);
-        o.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-        g.gain.setValueAtTime(0.15, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-        o.start(ctx.currentTime);
-        o.stop(ctx.currentTime + 0.4);
+      const ac = new AudioContext();
+      ctx.current = ac;
+      const beep = () => {
+        const o1 = ac.createOscillator();
+        const o2 = ac.createOscillator();
+        const g = ac.createGain();
+        o1.connect(g); o2.connect(g); g.connect(ac.destination);
+        o1.frequency.value = 440;
+        o2.frequency.value = 550;
+        g.gain.setValueAtTime(0.08, ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.6);
+        o1.start(ac.currentTime); o1.stop(ac.currentTime + 0.3);
+        o2.start(ac.currentTime + 0.3); o2.stop(ac.currentTime + 0.6);
       };
-
-      playBeep();
-      intervalRef.current = setInterval(playBeep, 1500);
+      beep();
+      iv.current = setInterval(beep, 2000);
     } catch {}
-  }, []);
+  }, [stop]);
 
-  const stopRing = useCallback(() => {
-    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    if (ctxRef.current) { ctxRef.current.close().catch(() => {}); ctxRef.current = null; }
-  }, []);
-
-  // cleanup on unmount
-  useEffect(() => () => stopRing(), [stopRing]);
-
-  return { playRing, stopRing };
+  useEffect(() => () => stop(), [stop]);
+  return { play, stop };
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Wave visualizer
+   SMALL COMPONENTS
    ═══════════════════════════════════════════════════════════ */
 
-function WaveBars({ active }: { active: boolean }) {
-  const heights = [12, 20, 28, 20, 12];
+function WaveBars({ active, color = "var(--accent)" }: { active: boolean; color?: string }) {
+  const hs = [10, 18, 26, 22, 14, 24, 16, 20, 12];
   return (
-    <div style={{ display: "flex", alignItems: "end", gap: 3, height: 28 }}>
-      {heights.map((h, i) => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2.5, height: 30 }}>
+      {hs.map((h, i) => (
         <div key={i} style={{
-          width: 3,
-          borderRadius: 2,
-          background: "var(--accent)",
-          opacity: active ? 0.8 : 0.15,
-          height: active ? undefined : 4,
-          animation: active ? `waveBar 0.6s ease-in-out ${i * 0.1}s infinite` : "none",
-          ["--h" as string]: `${h}px`,
-          transition: "opacity 0.3s",
+          width: 2.5, borderRadius: 4, background: color,
+          opacity: active ? 0.85 : 0.12,
+          height: active ? undefined : 3,
+          animation: active ? `wave 0.55s ease-in-out ${i * 0.06}s infinite` : "none",
+          "--h": `${h}px`,
+          transition: "opacity 0.4s",
+        } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
+
+function Dots({ color = "var(--accent)", count = 3 }: { color?: string; count?: number }) {
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} style={{
+          width: 7, height: 7, borderRadius: "50%", background: color,
+          animation: `dot-pulse 1.4s ease-in-out ${i * 0.16}s infinite`,
         }} />
       ))}
     </div>
@@ -140,7 +156,7 @@ function WaveBars({ active }: { active: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Main App
+   MAIN
    ═══════════════════════════════════════════════════════════ */
 
 export default function Home() {
@@ -149,25 +165,26 @@ export default function Home() {
   const [category, setCategory] = useState("Random");
   const [muted, setMuted] = useState(false);
   const [peerMuted, setPeerMuted] = useState(false);
-  const [onlineCount, setOnlineCount] = useState(0);
+  const [online, setOnline] = useState(0);
   const [timer, setTimer] = useState(0);
   const [myName, setMyName] = useState("");
   const [peerName, setPeerName] = useState("");
-  const [micAllowed, setMicAllowed] = useState(false);
-  const [callEndMsg, setCallEndMsg] = useState("");
+  const [micOk, setMicOk] = useState(false);
+  const [toast, setToast] = useState("");
+  const [localSpk, setLocalSpk] = useState(false);
+  const [peerSpk, setPeerSpk] = useState(false);
 
-  const socketRef = useRef<Socket | null>(null);
-  const pcRef = useRef<RTCPeerConnection | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const roomRef = useRef<string | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [localSpeaking, setLocalSpeaking] = useState(false);
-  const [peerSpeaking, setPeerSpeaking] = useState(false);
+  const sock = useRef<Socket | null>(null);
+  const pc = useRef<RTCPeerConnection | null>(null);
+  const stream = useRef<MediaStream | null>(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const room = useRef<string | null>(null);
+  const tmr = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { playRing, stopRing } = useRingtone();
+  const ring = useRingtone();
 
-  const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const fmt = (s: number) =>
+    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   /* ── Theme ── */
   useEffect(() => {
@@ -175,115 +192,92 @@ export default function Home() {
   }, [dark]);
 
   /* ── Mic ── */
-  async function requestMic() {
+  async function reqMic() {
     try {
-      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = s;
-      setMicAllowed(true);
-      initSocket();
+      stream.current = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setMicOk(true);
+      initSock();
     } catch {
-      alert("Microphone access is required for voice chat.");
+      alert("Microphone access is required.");
     }
   }
 
   /* ── Socket ── */
-  function initSocket() {
-    if (socketRef.current?.connected) return;
+  function initSock() {
+    if (sock.current?.connected) return;
     const s = io({ transports: ["websocket", "polling"] });
-    socketRef.current = s;
+    sock.current = s;
 
     s.on("your_name", ({ name }: { name: string }) => setMyName(name));
-    s.on("online_count", ({ count }: { count: number }) => setOnlineCount(count));
+    s.on("online_count", ({ count }: { count: number }) => setOnline(count));
     s.on("searching", () => setState("searching"));
 
     s.on("incoming_call", ({ roomId, callerName }: { roomId: string; callerName: string }) => {
-      roomRef.current = roomId;
-      setPeerName(callerName);
-      setState("incoming");
-      playRing();
+      room.current = roomId; setPeerName(callerName);
+      setState("incoming"); ring.play();
     });
 
-    s.on("calling_peer", ({ roomId, peerName: pn }: { roomId: string; peerName: string }) => {
-      roomRef.current = roomId;
-      setPeerName(pn);
-      setState("calling");
+    s.on("calling_peer", ({ roomId, peerName: n }: { roomId: string; peerName: string }) => {
+      room.current = roomId; setPeerName(n); setState("calling");
     });
 
     s.on("call_accepted", async ({ roomId, initiator }: { roomId: string; initiator: boolean }) => {
-      stopRing();
-      roomRef.current = roomId;
-      setState("connected");
-      startTimer();
-      await setupPeer(initiator, roomId);
+      ring.stop(); room.current = roomId;
+      setState("connected"); startTmr();
+      await setupPC(initiator, roomId);
     });
 
     s.on("call_declined", () => {
-      stopRing();
-      setCallEndMsg("Call declined");
-      setState("idle");
-      roomRef.current = null;
-      setTimeout(() => setCallEndMsg(""), 3000);
+      ring.stop(); flash("They declined"); setState("idle"); room.current = null;
     });
 
     s.on("call_ended", ({ reason }: { reason: string }) => {
-      stopRing();
-      cleanupPeer();
-      stopTimer();
-      setCallEndMsg(reason);
-      setState("idle");
-      roomRef.current = null;
-      setPeerMuted(false);
-      setPeerSpeaking(false);
-      setTimer(0);
-      setTimeout(() => setCallEndMsg(""), 3000);
+      ring.stop(); killPC(); stopTmr();
+      flash(reason); setState("idle");
+      room.current = null; setPeerMuted(false); setPeerSpk(false); setTimer(0);
     });
 
     s.on("signal", async ({ data }: { data: RTCSessionDescriptionInit | { type: string; candidate: RTCIceCandidateInit } }) => {
-      if (!pcRef.current) return;
+      if (!pc.current) return;
       try {
         if ("candidate" in data && data.type === "ice-candidate") {
           const d = data as { type: string; candidate: RTCIceCandidateInit };
-          if (d.candidate) await pcRef.current.addIceCandidate(new RTCIceCandidate(d.candidate));
+          if (d.candidate) await pc.current.addIceCandidate(new RTCIceCandidate(d.candidate));
         } else {
           const sdp = data as RTCSessionDescriptionInit;
-          await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
+          await pc.current.setRemoteDescription(new RTCSessionDescription(sdp));
           if (sdp.type === "offer") {
-            const answer = await pcRef.current.createAnswer();
-            await pcRef.current.setLocalDescription(answer);
-            s.emit("signal", { roomId: roomRef.current, data: pcRef.current.localDescription });
+            const ans = await pc.current.createAnswer();
+            await pc.current.setLocalDescription(ans);
+            s.emit("signal", { roomId: room.current, data: pc.current.localDescription });
           }
         }
-      } catch (e) { console.error("signal err", e); }
+      } catch (e) { console.error(e); }
     });
 
     s.on("peer_mute_state", ({ muted: m }: { muted: boolean }) => setPeerMuted(m));
   }
 
   /* ── WebRTC ── */
-  async function setupPeer(initiator: boolean, roomId: string) {
-    cleanupPeer();
-    const pc = new RTCPeerConnection(ICE);
-    pcRef.current = pc;
+  async function setupPC(init: boolean, rid: string) {
+    killPC();
+    const p = new RTCPeerConnection(ICE);
+    pc.current = p;
+    stream.current?.getTracks().forEach((t) => p.addTrack(t, stream.current!));
 
-    streamRef.current?.getTracks().forEach((t) => pc.addTrack(t, streamRef.current!));
-
-    pc.onicecandidate = (e) => {
-      if (e.candidate) {
-        socketRef.current?.emit("signal", { roomId, data: { type: "ice-candidate", candidate: e.candidate.toJSON() } });
-      }
+    p.onicecandidate = (e) => {
+      if (e.candidate) sock.current?.emit("signal", { roomId: rid, data: { type: "ice-candidate", candidate: e.candidate.toJSON() } });
     };
 
-    pc.ontrack = (e) => {
-      if (audioRef.current) {
-        audioRef.current.srcObject = e.streams[0];
-        audioRef.current.play().catch(() => {});
+    p.ontrack = (e) => {
+      if (audio.current) {
+        audio.current.srcObject = e.streams[0];
+        audio.current.play().catch(() => {});
       }
-      // peer volume detection
       try {
-        const ctx = new AudioContext();
-        const src = ctx.createMediaStreamSource(e.streams[0]);
-        const an = ctx.createAnalyser();
-        an.fftSize = 256;
+        const ac = new AudioContext();
+        const src = ac.createMediaStreamSource(e.streams[0]);
+        const an = ac.createAnalyser(); an.fftSize = 256;
         src.connect(an);
         const buf = new Uint8Array(an.frequencyBinCount);
         let last = false;
@@ -291,46 +285,44 @@ export default function Home() {
           an.getByteFrequencyData(buf);
           const avg = buf.slice(0, 40).reduce((a, b) => a + b, 0) / 40;
           const sp = avg > 10;
-          if (sp !== last) { last = sp; setPeerSpeaking(sp); }
+          if (sp !== last) { last = sp; setPeerSpk(sp); }
           requestAnimationFrame(tick);
         };
         tick();
       } catch {}
     };
 
-    if (initiator) {
-      const offer = await pc.createOffer({ offerToReceiveAudio: true });
-      await pc.setLocalDescription(offer);
-      socketRef.current?.emit("signal", { roomId, data: pc.localDescription });
+    if (init) {
+      const offer = await p.createOffer({ offerToReceiveAudio: true });
+      await p.setLocalDescription(offer);
+      sock.current?.emit("signal", { roomId: rid, data: p.localDescription });
     }
   }
 
-  function cleanupPeer() {
-    pcRef.current?.close();
-    pcRef.current = null;
-    if (audioRef.current) audioRef.current.srcObject = null;
-    setPeerSpeaking(false);
+  function killPC() {
+    pc.current?.close(); pc.current = null;
+    if (audio.current) audio.current.srcObject = null;
+    setPeerSpk(false);
   }
 
-  /* ── Timer ── */
-  function startTimer() { stopTimer(); setTimer(0); timerRef.current = setInterval(() => setTimer((p) => p + 1), 1000); }
-  function stopTimer() { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } }
+  function startTmr() { stopTmr(); setTimer(0); tmr.current = setInterval(() => setTimer((p) => p + 1), 1000); }
+  function stopTmr() { if (tmr.current) { clearInterval(tmr.current); tmr.current = null; } }
+  function flash(msg: string) { setToast(msg); setTimeout(() => setToast(""), 3500); }
 
   /* ── Mute ── */
   useEffect(() => {
-    streamRef.current?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
-    socketRef.current?.emit("mute_state", { muted });
+    stream.current?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
+    sock.current?.emit("mute_state", { muted });
   }, [muted]);
 
-  /* ── Local speaking detection ── */
+  /* ── Local speaking ── */
   useEffect(() => {
-    if (!streamRef.current) return;
+    if (!stream.current) return;
     let frame: number;
     try {
-      const ctx = new AudioContext();
-      const src = ctx.createMediaStreamSource(streamRef.current);
-      const an = ctx.createAnalyser();
-      an.fftSize = 256;
+      const ac = new AudioContext();
+      const src = ac.createMediaStreamSource(stream.current);
+      const an = ac.createAnalyser(); an.fftSize = 256;
       src.connect(an);
       const buf = new Uint8Array(an.frequencyBinCount);
       let last = false;
@@ -338,436 +330,484 @@ export default function Home() {
         an.getByteFrequencyData(buf);
         const avg = buf.slice(0, 40).reduce((a, b) => a + b, 0) / 40;
         const sp = avg > 12;
-        if (sp !== last) { last = sp; setLocalSpeaking(sp); }
+        if (sp !== last) { last = sp; setLocalSpk(sp); }
         frame = requestAnimationFrame(tick);
       };
       tick();
       return () => cancelAnimationFrame(frame);
     } catch { return; }
-  }, [micAllowed]);
+  }, [micOk]);
 
   /* ── Actions ── */
-  function handleFind() {
-    socketRef.current?.emit("find_partner", { category: category.toLowerCase() });
-  }
+  const find = () => sock.current?.emit("find_partner", { category: category.toLowerCase().replace(" ", "-") });
+  const accept = () => { ring.stop(); sock.current?.emit("accept_call", { roomId: room.current }); };
+  const decline = () => { ring.stop(); sock.current?.emit("decline_call", { roomId: room.current }); setState("idle"); room.current = null; };
 
-  function handleAccept() {
-    stopRing();
-    socketRef.current?.emit("accept_call", { roomId: roomRef.current });
-  }
+  const endCall = () => {
+    sock.current?.emit("end_call"); killPC(); stopTmr(); setTimer(0);
+    setState("idle"); room.current = null; setPeerMuted(false); setPeerSpk(false);
+  };
 
-  function handleDecline() {
-    stopRing();
-    socketRef.current?.emit("decline_call", { roomId: roomRef.current });
-    setState("idle");
-    roomRef.current = null;
-  }
+  const next = () => {
+    sock.current?.emit("end_call"); killPC(); stopTmr(); setTimer(0);
+    setPeerMuted(false); setPeerSpk(false); find();
+  };
 
-  function handleEndCall() {
-    socketRef.current?.emit("end_call");
-    cleanupPeer();
-    stopTimer();
-    setTimer(0);
-    setState("idle");
-    roomRef.current = null;
-    setPeerMuted(false);
-    setPeerSpeaking(false);
-  }
-
-  function handleNext() {
-    socketRef.current?.emit("end_call");
-    cleanupPeer();
-    stopTimer();
-    setTimer(0);
-    setPeerMuted(false);
-    setPeerSpeaking(false);
-    handleFind();
-  }
-
-  /* ── Cleanup ── */
   useEffect(() => () => {
-    stopTimer();
-    stopRing();
-    cleanupPeer();
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    socketRef.current?.disconnect();
+    stopTmr(); ring.stop(); killPC();
+    stream.current?.getTracks().forEach((t) => t.stop());
+    sock.current?.disconnect();
   }, []);
 
   /* ═══════════════════════════════════════════════════════════
-     RENDER
+     STYLES
      ═══════════════════════════════════════════════════════════ */
 
-  // Mic permission screen
-  if (!micAllowed) {
+  const S = {
+    page: {
+      background: "var(--bg)", height: "100vh", width: "100vw",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      position: "relative" as const, overflow: "hidden",
+      transition: "background 0.5s",
+    } satisfies CSSProperties,
+
+    // Ambient gradient layer behind card
+    ambient: {
+      position: "absolute" as const, inset: 0, pointerEvents: "none" as const,
+      background: "var(--gradient-1), var(--gradient-2), var(--gradient-3)",
+      transition: "background 0.5s",
+    } satisfies CSSProperties,
+
+    card: {
+      position: "relative" as const,
+      background: "var(--card)",
+      backdropFilter: `blur(var(--glass-blur))`,
+      WebkitBackdropFilter: `blur(var(--glass-blur))`,
+      border: "1px solid var(--card-border)",
+      boxShadow: "var(--card-shadow)",
+      borderRadius: 32,
+      width: "min(88vw, 400px)",
+      minHeight: 420,
+      padding: "44px 36px",
+      display: "flex", flexDirection: "column" as const, alignItems: "center",
+      justifyContent: "center",
+      animation: "fadeScale 0.5s cubic-bezier(.2,.8,.2,1)",
+      transition: "background 0.5s, border-color 0.5s, box-shadow 0.5s",
+      zIndex: 2,
+    } satisfies CSSProperties,
+
+    // Circle avatar
+    circle: (active: boolean, color: string, glow: string) => ({
+      width: 110, height: 110, borderRadius: "50%",
+      border: active ? `2.5px solid ${color}` : "2px solid var(--divider)",
+      background: active ? `${color}11` : "var(--bg-sub)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      transition: "all 0.4s cubic-bezier(.2,.8,.2,1)",
+      boxShadow: active ? `0 0 40px ${glow}` : "none",
+      position: "relative" as const,
+    }) satisfies CSSProperties,
+
+    // Round button
+    btn: (bg: string, shadow: string, sz = 64) => ({
+      width: sz, height: sz, borderRadius: "50%",
+      border: "none", cursor: "pointer",
+      background: bg, color: "#fff",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      boxShadow: `0 4px 24px ${shadow}`,
+      transition: "transform 0.15s, box-shadow 0.15s",
+    }) satisfies CSSProperties,
+
+    // Ghost button
+    ghost: (sz = 52) => ({
+      width: sz, height: sz, borderRadius: "50%",
+      border: "1px solid var(--divider)",
+      background: "var(--bg-sub)", cursor: "pointer",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      color: "var(--text-2)",
+      transition: "all 0.2s",
+    }) satisfies CSSProperties,
+
+    pill: (active: boolean) => ({
+      padding: "7px 16px", borderRadius: 100, fontSize: 12, fontWeight: 500 as const,
+      border: "1px solid",
+      borderColor: active ? "var(--accent)" : "var(--divider)",
+      background: active ? "var(--accent-soft)" : "transparent",
+      color: active ? "var(--accent)" : "var(--text-2)",
+      cursor: "pointer", transition: "all 0.25s",
+      letterSpacing: "0.01em",
+    }) satisfies CSSProperties,
+  };
+
+  const press = (e: React.MouseEvent) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.92)"; };
+  const release = (e: React.MouseEvent) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; };
+
+  /* ═══════════════════════════════════════════════════════════
+     PERMISSION SCREEN
+     ═══════════════════════════════════════════════════════════ */
+
+  if (!micOk) {
     return (
-      <div data-theme={dark ? "dark" : "light"} style={{ background: "var(--bg)", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s" }}>
-        <div style={{
-          background: "var(--card)", border: "1px solid var(--card-border)", boxShadow: "var(--card-shadow)",
-          borderRadius: 24, padding: "48px 40px", maxWidth: 380, width: "90%", textAlign: "center",
-          animation: "fadeScale 0.4s ease",
-        }}>
+      <div style={S.page}>
+        <div style={S.ambient} />
+        <div style={{ ...S.card, minHeight: 340 }}>
           <div style={{
-            width: 72, height: 72, borderRadius: 20, margin: "0 auto 24px",
-            background: "var(--accent-bg)", display: "flex", alignItems: "center", justifyContent: "center",
+            width: 80, height: 80, borderRadius: 24,
+            background: "var(--accent-soft)", border: "1px solid var(--accent-med)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            marginBottom: 28, color: "var(--accent)",
           }}>
-            <Ic d={icons.mic} size={30} cls="" />
+            <MicSvg size={34} />
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: "var(--text-1)" }}>Voice Access</h1>
-          <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.6, marginBottom: 32 }}>
-            Allow microphone to start anonymous voice calls. Nothing is recorded.
+          <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8, color: "var(--text-1)", letterSpacing: "-0.02em" }}>
+            Microphone Access
+          </h1>
+          <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.7, textAlign: "center", marginBottom: 32, maxWidth: 280 }}>
+            Allow microphone to start anonymous voice calls. Nothing is recorded. Ever.
           </p>
-          <button onClick={requestMic} style={{
-            width: "100%", height: 48, borderRadius: 14, border: "none", cursor: "pointer",
-            background: "var(--accent)", color: "#fff", fontSize: 15, fontWeight: 600,
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            transition: "transform 0.15s, opacity 0.15s",
-          }}
-          onMouseDown={(e) => { (e.target as HTMLElement).style.transform = "scale(0.97)"; }}
-          onMouseUp={(e) => { (e.target as HTMLElement).style.transform = "scale(1)"; }}
-          >
-            <Ic d={icons.mic} size={16} />
-            Allow Microphone
+          <button onClick={reqMic}
+            onMouseDown={press} onMouseUp={release}
+            style={{
+              width: "100%", maxWidth: 260, height: 52, borderRadius: 16, border: "none",
+              background: "var(--accent)", color: "#fff", fontSize: 15, fontWeight: 600,
+              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+              boxShadow: `0 4px 20px var(--accent-glow)`,
+              transition: "transform 0.15s",
+            }}>
+            <MicSvg size={17} />
+            Allow & Start
           </button>
         </div>
       </div>
     );
   }
 
+  /* ═══════════════════════════════════════════════════════════
+     MAIN RENDER
+     ═══════════════════════════════════════════════════════════ */
+
   return (
-    <div style={{ background: "var(--bg)", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transition: "background 0.3s", position: "relative", overflow: "hidden" }}>
-      <audio ref={audioRef} autoPlay playsInline style={{ display: "none" }} />
+    <div style={S.page}>
+      <div style={S.ambient} />
+      <audio ref={audio} autoPlay playsInline style={{ display: "none" }} />
 
-      {/* ── Theme toggle — top right ── */}
-      <button onClick={() => setDark((d) => !d)} style={{
-        position: "absolute", top: 20, right: 20, width: 40, height: 40, borderRadius: 12,
-        border: "1px solid var(--card-border)", background: "var(--card)", cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-2)",
-        boxShadow: "var(--card-shadow)", transition: "all 0.2s", zIndex: 10,
-      }}>
-        <SunMoon dark={dark} size={16} />
-      </button>
-
-      {/* ── Online count — top left ── */}
+      {/* ── Top bar: online + theme ── */}
       <div style={{
-        position: "absolute", top: 20, left: 20, display: "flex", alignItems: "center", gap: 8,
-        fontSize: 13, color: "var(--text-3)", zIndex: 10,
+        position: "absolute", top: 0, left: 0, right: 0, padding: "20px 24px",
+        display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 10,
       }}>
-        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--green)", boxShadow: `0 0 6px var(--green)` }} />
-        {onlineCount} online
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-3)", fontWeight: 500 }}>
+          <div style={{
+            width: 7, height: 7, borderRadius: "50%", background: "var(--green)",
+            boxShadow: `0 0 8px var(--green-glow)`,
+            animation: "breathe 2s ease-in-out infinite",
+          }} />
+          {online} online
+        </div>
+        <button
+          onClick={() => setDark((d) => !d)}
+          style={{
+            width: 42, height: 42, borderRadius: 14,
+            border: "1px solid var(--card-border)", background: "var(--card)",
+            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            color: "var(--text-2)", boxShadow: "var(--card-shadow)",
+            transition: "all 0.3s",
+          }}
+        >
+          {dark ? <SunSvg /> : <MoonSvg />}
+        </button>
       </div>
 
-      {/* ── End message toast ── */}
-      {callEndMsg && (
+      {/* ── Toast ── */}
+      {toast && (
         <div style={{
-          position: "absolute", top: 20, left: "50%", transform: "translateX(-50%)",
-          background: "var(--card)", border: "1px solid var(--card-border)", borderRadius: 12,
-          padding: "10px 20px", fontSize: 13, color: "var(--text-2)", boxShadow: "var(--card-shadow)",
-          animation: "fadeUp 0.3s ease", zIndex: 20,
+          position: "absolute", top: 24, left: "50%", transform: "translateX(-50%)",
+          background: "var(--card-solid)", border: "1px solid var(--card-border)",
+          borderRadius: 14, padding: "12px 24px", fontSize: 13, fontWeight: 500,
+          color: "var(--text-2)", boxShadow: "var(--card-shadow)",
+          animation: "toast-in 0.3s ease", zIndex: 30,
+          backdropFilter: "blur(20px)",
         }}>
-          {callEndMsg}
+          {toast}
         </div>
       )}
 
-      {/* ═══════════════════════════════════════════════════════
-          MAIN CARD
-          ═══════════════════════════════════════════════════════ */}
-      <div style={{
-        background: "var(--card)", border: "1px solid var(--card-border)", boxShadow: "var(--card-shadow)",
-        borderRadius: 28, width: "min(92vw, 400px)", padding: "40px 32px",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        animation: "fadeScale 0.4s ease", transition: "background 0.3s, border-color 0.3s",
-        position: "relative", overflow: "hidden",
-      }}>
+      {/* ═══ CARD ═══ */}
+      <div style={S.card} key={state}>
 
-        {/* ── IDLE ── */}
+        {/* ────── IDLE ────── */}
         {state === "idle" && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeUp 0.3s ease" }}>
-            {/* Question mark circle */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeIn 0.5s ease" }}>
+            {/* ? Circle */}
             <div style={{
-              width: 100, height: 100, borderRadius: "50%",
-              background: "var(--matte)", border: "2px solid var(--divider)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              marginBottom: 24, position: "relative",
+              ...S.circle(false, "", ""),
+              animation: "float 4s ease-in-out infinite",
+              marginBottom: 28,
             }}>
-              <span style={{ fontSize: 40, fontWeight: 300, color: "var(--text-3)", fontFamily: "Georgia, serif" }}>?</span>
+              <span style={{
+                fontSize: 44, fontWeight: 200, color: "var(--text-3)",
+                fontFamily: "'Georgia', 'Times New Roman', serif",
+                userSelect: "none",
+              }}>?</span>
             </div>
 
-            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 4 }}>
+            <p style={{ fontSize: 12, color: "var(--text-3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>
               You are
             </p>
-            <p style={{ fontSize: 16, fontWeight: 600, color: "var(--text-1)", marginBottom: 24 }}>
+            <p style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 28, letterSpacing: "-0.02em" }}>
               {myName || "Anonymous"}
             </p>
 
             {/* Category pills */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 32 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 36, maxWidth: 320 }}>
               {CATEGORIES.map((c) => (
-                <button key={c} onClick={() => setCategory(c)} style={{
-                  padding: "6px 14px", borderRadius: 100, fontSize: 12, fontWeight: 500,
-                  border: "1px solid",
-                  borderColor: category === c ? "var(--accent)" : "var(--divider)",
-                  background: category === c ? "var(--accent-bg)" : "transparent",
-                  color: category === c ? "var(--accent)" : "var(--text-2)",
-                  cursor: "pointer", transition: "all 0.2s",
-                }}>
+                <button key={c} onClick={() => setCategory(c)} style={S.pill(category === c)}>
                   {c}
                 </button>
               ))}
             </div>
 
             {/* Call button */}
-            <button onClick={handleFind} style={{
-              width: 72, height: 72, borderRadius: "50%", border: "none", cursor: "pointer",
-              background: "var(--green)", color: "#fff",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: `0 4px 20px ${dark ? "rgba(48,209,88,0.3)" : "rgba(52,199,89,0.35)"}`,
-              transition: "transform 0.15s",
-            }}
-            onMouseDown={(e) => { (e.target as HTMLElement).style.transform = "scale(0.92)"; }}
-            onMouseUp={(e) => { (e.target as HTMLElement).style.transform = "scale(1)"; }}
+            <button
+              onClick={find}
+              onMouseDown={press} onMouseUp={release}
+              style={S.btn("var(--green)", "var(--green-glow)", 72)}
             >
-              <PhoneIcon size={28} />
+              <PhoneSvg size={30} />
             </button>
-            <p style={{ fontSize: 12, color: "var(--text-3)", marginTop: 12 }}>Tap to find someone</p>
+            <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 14, letterSpacing: "0.03em" }}>
+              Tap to call a stranger
+            </p>
           </div>
         )}
 
-        {/* ── SEARCHING ── */}
+        {/* ────── SEARCHING ────── */}
         {state === "searching" && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeUp 0.3s ease" }}>
-            <div style={{
-              width: 100, height: 100, borderRadius: "50%",
-              background: "var(--matte)", border: "2px solid var(--divider)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              marginBottom: 24, position: "relative",
-            }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeIn 0.4s ease" }}>
+            <div style={{ ...S.circle(false, "", ""), marginBottom: 28, position: "relative" }}>
               <div style={{
-                width: 20, height: 20, borderRadius: "50%",
-                border: "2px solid var(--accent)", borderTopColor: "transparent",
-                animation: "spin 0.8s linear infinite",
+                width: 24, height: 24, borderRadius: "50%",
+                border: "2.5px solid var(--accent)", borderTopColor: "transparent",
+                animation: "spin 0.7s linear infinite",
               }} />
+              {/* Orbit ring */}
+              <div style={{
+                position: "absolute", inset: -14, borderRadius: "50%",
+                border: "1px solid var(--divider)", opacity: 0.5,
+                animation: "spin 4s linear infinite",
+              }}>
+                <div style={{
+                  position: "absolute", top: -3, left: "50%", transform: "translateX(-50%)",
+                  width: 6, height: 6, borderRadius: "50%", background: "var(--accent)",
+                  boxShadow: `0 0 10px var(--accent-glow)`,
+                }} />
+              </div>
             </div>
 
-            <p style={{ fontSize: 17, fontWeight: 600, color: "var(--text-1)", marginBottom: 6 }}>Searching...</p>
-            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 32 }}>
-              Looking in {category}
+            <p style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 6, letterSpacing: "-0.02em" }}>
+              Searching
+            </p>
+            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 6 }}>
+              Category: <span style={{ color: "var(--accent)", fontWeight: 600 }}>{category}</span>
+            </p>
+            <p style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 36 }}>
+              {online > 1 ? `${online} people online` : "Waiting for someone..."}
             </p>
 
-            {/* Bouncing dots */}
-            <div style={{ display: "flex", gap: 6, marginBottom: 32 }}>
-              {[0, 1, 2].map((i) => (
-                <div key={i} style={{
-                  width: 8, height: 8, borderRadius: "50%", background: "var(--accent)",
-                  animation: `bounce 1.4s ease-in-out ${i * 0.16}s infinite`,
-                }} />
-              ))}
-            </div>
+            <Dots color="var(--accent)" />
 
-            <button onClick={handleEndCall} style={{
-              padding: "10px 28px", borderRadius: 12, border: "1px solid var(--divider)",
-              background: "transparent", color: "var(--text-2)", fontSize: 13, fontWeight: 500,
-              cursor: "pointer", transition: "all 0.2s",
+            <button onClick={endCall} style={{
+              ...S.ghost(44), marginTop: 32, border: "1px solid var(--divider)",
+              width: "auto", height: "auto", borderRadius: 12, padding: "10px 28px",
+              fontSize: 13, fontWeight: 500,
             }}>
               Cancel
             </button>
           </div>
         )}
 
-        {/* ── INCOMING CALL ── */}
+        {/* ────── INCOMING CALL ────── */}
         {state === "incoming" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeScale 0.3s ease" }}>
-            {/* Pulsing avatar */}
-            <div style={{ position: "relative", marginBottom: 24 }}>
-              <div style={{
-                position: "absolute", inset: -12, borderRadius: "50%",
-                border: "2px solid var(--accent)", opacity: 0.3,
-                animation: "pulse 1.5s ease-in-out infinite",
-              }} />
-              <div style={{
-                position: "absolute", inset: -24, borderRadius: "50%",
-                border: "1px solid var(--accent)", opacity: 0.15,
-                animation: "pulse 1.5s ease-in-out 0.3s infinite",
-              }} />
-              <div style={{
-                width: 100, height: 100, borderRadius: "50%",
-                background: "var(--accent-bg)", border: "2px solid var(--accent)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                animation: "shake 2s ease-in-out infinite",
-              }}>
-                <PhoneIcon size={36} />
-              </div>
-            </div>
-
-            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 4 }}>Incoming call from</p>
-            <p style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>{peerName}</p>
-            <p style={{ fontSize: 12, color: "var(--text-3)", marginBottom: 36 }}>wants to talk to you</p>
-
-            {/* Accept / Decline */}
-            <div style={{ display: "flex", gap: 24 }}>
-              <button onClick={handleDecline} style={{
-                width: 60, height: 60, borderRadius: "50%", border: "none", cursor: "pointer",
-                background: "var(--red)", color: "#fff",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: `0 4px 16px ${dark ? "rgba(255,69,58,0.3)" : "rgba(255,59,48,0.3)"}`,
-                transition: "transform 0.15s",
-              }}
-              onMouseDown={(e) => { (e.currentTarget).style.transform = "scale(0.9)"; }}
-              onMouseUp={(e) => { (e.currentTarget).style.transform = "scale(1)"; }}
-              >
-                <PhoneDownIcon size={22} />
-              </button>
-
-              <button onClick={handleAccept} style={{
-                width: 60, height: 60, borderRadius: "50%", border: "none", cursor: "pointer",
-                background: "var(--green)", color: "#fff",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: `0 4px 16px ${dark ? "rgba(48,209,88,0.3)" : "rgba(52,199,89,0.3)"}`,
-                transition: "transform 0.15s",
-              }}
-              onMouseDown={(e) => { (e.currentTarget).style.transform = "scale(0.9)"; }}
-              onMouseUp={(e) => { (e.currentTarget).style.transform = "scale(1)"; }}
-              >
-                <PhoneIcon size={24} />
-              </button>
-            </div>
-
-            <div style={{ display: "flex", gap: 40, marginTop: 12 }}>
-              <span style={{ fontSize: 11, color: "var(--red)", fontWeight: 500 }}>Decline</span>
-              <span style={{ fontSize: 11, color: "var(--green)", fontWeight: 500 }}>Accept</span>
-            </div>
-          </div>
-        )}
-
-        {/* ── CALLING (waiting for accept) ── */}
-        {state === "calling" && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeUp 0.3s ease" }}>
-            <div style={{ position: "relative", marginBottom: 24 }}>
-              <div style={{
-                position: "absolute", inset: -10, borderRadius: "50%",
-                animation: "callPulse 2s infinite",
-              }} />
-              <div style={{
-                width: 100, height: 100, borderRadius: "50%",
-                background: "var(--green-bg)", border: "2px solid var(--green)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <PhoneIcon size={36} />
-              </div>
-            </div>
-
-            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 4 }}>Calling</p>
-            <p style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>{peerName}</p>
-            <p style={{ fontSize: 12, color: "var(--text-3)", marginBottom: 32 }}>ringing...</p>
-
-            <div style={{ display: "flex", gap: 6, marginBottom: 32 }}>
+            <div style={{ position: "relative", marginBottom: 28 }}>
+              {/* Pulse rings */}
               {[0, 1, 2].map((i) => (
                 <div key={i} style={{
-                  width: 6, height: 6, borderRadius: "50%", background: "var(--green)",
-                  animation: `bounce 1.4s ease-in-out ${i * 0.16}s infinite`,
+                  position: "absolute", inset: -(10 + i * 14), borderRadius: "50%",
+                  border: `${2 - i * 0.5}px solid var(--accent)`,
+                  animation: `pulse-ring 2s ease-out ${i * 0.3}s infinite`,
+                  opacity: 0.4 - i * 0.1,
                 }} />
               ))}
+              <div style={{
+                ...S.circle(true, "var(--accent)", "var(--accent-glow)"),
+                animation: "shake-phone 2.5s ease-in-out infinite",
+                color: "var(--accent)",
+              }}>
+                <PhoneSvg size={40} />
+              </div>
             </div>
 
-            <button onClick={handleEndCall} style={{
-              width: 56, height: 56, borderRadius: "50%", border: "none", cursor: "pointer",
-              background: "var(--red)", color: "#fff",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: `0 4px 16px ${dark ? "rgba(255,69,58,0.3)" : "rgba(255,59,48,0.3)"}`,
-            }}>
-              <PhoneDownIcon size={20} />
-            </button>
-            <span style={{ fontSize: 11, color: "var(--red)", marginTop: 8 }}>Cancel</span>
+            <p style={{ fontSize: 11, color: "var(--text-3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>
+              Incoming Call
+            </p>
+            <p style={{ fontSize: 20, fontWeight: 700, color: "var(--text-1)", marginBottom: 4, letterSpacing: "-0.02em" }}>
+              {peerName}
+            </p>
+            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 40 }}>
+              wants to talk to you
+            </p>
+
+            {/* Accept / Decline */}
+            <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                <button onClick={decline} onMouseDown={press} onMouseUp={release}
+                  style={S.btn("var(--red)", "var(--red-glow)", 60)}>
+                  <EndCallSvg size={22} />
+                </button>
+                <span style={{ fontSize: 11, color: "var(--red)", fontWeight: 600 }}>Decline</span>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                <button onClick={accept} onMouseDown={press} onMouseUp={release}
+                  style={S.btn("var(--green)", "var(--green-glow)", 60)}>
+                  <PhoneSvg size={26} />
+                </button>
+                <span style={{ fontSize: 11, color: "var(--green)", fontWeight: 600 }}>Accept</span>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ── CONNECTED ── */}
-        {state === "connected" && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeUp 0.3s ease" }}>
-            {/* Avatar circle with speaking ring */}
-            <div style={{
-              width: 100, height: 100, borderRadius: "50%",
-              background: peerSpeaking ? "var(--green-bg)" : "var(--matte)",
-              border: peerSpeaking ? "2px solid var(--green)" : "2px solid var(--divider)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              marginBottom: 16, transition: "all 0.3s",
-              boxShadow: peerSpeaking ? `0 0 24px ${dark ? "rgba(48,209,88,0.15)" : "rgba(52,199,89,0.15)"}` : "none",
-            }}>
-              <WaveBars active={peerSpeaking && !peerMuted} />
+        {/* ────── CALLING (outgoing) ────── */}
+        {state === "calling" && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeIn 0.4s ease" }}>
+            <div style={{ position: "relative", marginBottom: 28 }}>
+              <div style={{
+                position: "absolute", inset: -8, borderRadius: "50%",
+                animation: "orbit-glow 2s infinite",
+              }} />
+              <div style={{
+                ...S.circle(true, "var(--green)", "var(--green-glow)"),
+                color: "var(--green)",
+              }}>
+                <PhoneSvg size={38} />
+              </div>
             </div>
 
-            <p style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", marginBottom: 2 }}>{peerName}</p>
-            <p style={{ fontSize: 28, fontWeight: 300, color: "var(--text-2)", marginBottom: 4, fontVariantNumeric: "tabular-nums" }}>
+            <p style={{ fontSize: 11, color: "var(--text-3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>
+              Calling
+            </p>
+            <p style={{ fontSize: 20, fontWeight: 700, color: "var(--text-1)", marginBottom: 4, letterSpacing: "-0.02em" }}>
+              {peerName}
+            </p>
+            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 36 }}>
+              ringing...
+            </p>
+
+            <Dots color="var(--green)" />
+
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginTop: 32 }}>
+              <button onClick={endCall} onMouseDown={press} onMouseUp={release}
+                style={S.btn("var(--red)", "var(--red-glow)", 56)}>
+                <EndCallSvg size={20} />
+              </button>
+              <span style={{ fontSize: 11, color: "var(--red)", fontWeight: 500 }}>Cancel</span>
+            </div>
+          </div>
+        )}
+
+        {/* ────── CONNECTED ────── */}
+        {state === "connected" && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", animation: "fadeIn 0.4s ease" }}>
+            {/* Peer avatar */}
+            <div style={{
+              ...S.circle(peerSpk && !peerMuted, "var(--green)", "var(--green-glow)"),
+              marginBottom: 20,
+            }}>
+              <WaveBars active={peerSpk && !peerMuted} color="var(--green)" />
+            </div>
+
+            {/* Name & timer */}
+            <p style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 2, letterSpacing: "-0.02em" }}>
+              {peerName}
+            </p>
+            <p style={{
+              fontSize: 32, fontWeight: 300, color: "var(--text-2)", marginBottom: 4,
+              fontVariantNumeric: "tabular-nums", fontFamily: "'SF Mono', 'Menlo', monospace",
+              letterSpacing: "0.04em",
+            }}>
               {fmt(timer)}
             </p>
+
             {peerMuted && (
-              <p style={{ fontSize: 11, color: "var(--red)", marginBottom: 4 }}>muted</p>
+              <p style={{
+                fontSize: 11, color: "var(--red)", fontWeight: 500,
+                padding: "3px 10px", borderRadius: 6,
+                background: "var(--red-soft)",
+                marginBottom: 2,
+              }}>
+                Stranger is muted
+              </p>
             )}
 
-            {/* Your mic indicator */}
+            {/* Your mic pill */}
             <div style={{
               display: "flex", alignItems: "center", gap: 6,
-              padding: "4px 12px", borderRadius: 100,
-              background: muted ? "var(--red-bg)" : (localSpeaking ? "var(--green-bg)" : "var(--matte)"),
-              marginBottom: 36, transition: "all 0.2s",
+              padding: "5px 14px", borderRadius: 100,
+              background: muted ? "var(--red-soft)" : (localSpk ? "var(--green-soft)" : "var(--bg-sub)"),
+              marginTop: 8, marginBottom: 36, transition: "all 0.25s",
+              border: `1px solid ${muted ? "var(--red)" : "var(--divider)"}`,
             }}>
               <div style={{
                 width: 5, height: 5, borderRadius: "50%",
                 background: muted ? "var(--red)" : "var(--green)",
+                transition: "background 0.2s",
               }} />
-              <span style={{ fontSize: 11, color: muted ? "var(--red)" : "var(--text-2)" }}>
-                {muted ? "You are muted" : "Your mic"}
+              <span style={{ fontSize: 11, fontWeight: 500, color: muted ? "var(--red)" : "var(--text-2)" }}>
+                {muted ? "Your mic is off" : "Your mic"}
               </span>
             </div>
 
             {/* Controls */}
-            <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-              {/* Mute */}
-              <button onClick={() => setMuted((m) => !m)} style={{
-                width: 52, height: 52, borderRadius: "50%", border: "1px solid var(--divider)",
-                background: muted ? "var(--red-bg)" : "var(--matte)", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: muted ? "var(--red)" : "var(--text-2)", transition: "all 0.2s",
-              }}>
-                <Ic d={muted ? icons.micOff : icons.mic} size={20} />
-              </button>
+            <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                <button onClick={() => setMuted((m) => !m)} style={{
+                  ...S.ghost(52),
+                  background: muted ? "var(--red-soft)" : "var(--bg-sub)",
+                  borderColor: muted ? "var(--red)" : "var(--divider)",
+                  color: muted ? "var(--red)" : "var(--text-2)",
+                }}>
+                  {muted ? <MicOffSvg size={20} /> : <MicSvg size={20} />}
+                </button>
+                <span style={{ fontSize: 10, color: "var(--text-3)" }}>{muted ? "Unmute" : "Mute"}</span>
+              </div>
 
-              {/* End call */}
-              <button onClick={handleEndCall} style={{
-                width: 64, height: 64, borderRadius: "50%", border: "none", cursor: "pointer",
-                background: "var(--red)", color: "#fff",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: `0 4px 20px ${dark ? "rgba(255,69,58,0.3)" : "rgba(255,59,48,0.3)"}`,
-                transition: "transform 0.15s",
-              }}
-              onMouseDown={(e) => { (e.currentTarget).style.transform = "scale(0.9)"; }}
-              onMouseUp={(e) => { (e.currentTarget).style.transform = "scale(1)"; }}
-              >
-                <PhoneDownIcon size={24} />
-              </button>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                <button onClick={endCall} onMouseDown={press} onMouseUp={release}
+                  style={S.btn("var(--red)", "var(--red-glow)", 64)}>
+                  <EndCallSvg size={24} />
+                </button>
+                <span style={{ fontSize: 10, color: "var(--red)", fontWeight: 500 }}>End</span>
+              </div>
 
-              {/* Next */}
-              <button onClick={handleNext} style={{
-                width: 52, height: 52, borderRadius: "50%", border: "1px solid var(--divider)",
-                background: "var(--matte)", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: "var(--text-2)", transition: "all 0.2s",
-              }}>
-                <Ic d={icons.search} size={20} />
-              </button>
-            </div>
-
-            <div style={{ display: "flex", gap: 28, marginTop: 10 }}>
-              <span style={{ fontSize: 10, color: "var(--text-3)" }}>{muted ? "Unmute" : "Mute"}</span>
-              <span style={{ fontSize: 10, color: "var(--red)" }}>End</span>
-              <span style={{ fontSize: 10, color: "var(--text-3)" }}>Next</span>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                <button onClick={next} style={S.ghost(52)}>
+                  <SkipSvg size={20} />
+                </button>
+                <span style={{ fontSize: 10, color: "var(--text-3)" }}>Next</span>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Bottom branding ── */}
-      <p style={{ position: "absolute", bottom: 16, fontSize: 11, color: "var(--text-3)", letterSpacing: "0.04em" }}>
-        VoiceAnon &middot; anonymous &middot; encrypted &middot; peer-to-peer
+      {/* ── Bottom ── */}
+      <p style={{
+        position: "absolute", bottom: 18, fontSize: 11, color: "var(--text-4)",
+        letterSpacing: "0.06em", zIndex: 1, textAlign: "center",
+      }}>
+        VoiceAnon — peer-to-peer · encrypted · zero logs
       </p>
     </div>
   );
