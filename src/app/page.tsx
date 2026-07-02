@@ -187,7 +187,7 @@ export default function Home(){
           <div style={{position:"relative",background:"var(--sheet-bg)",borderRadius:"24px 24px 0 0",padding:"12px 24px 34px",maxHeight:"85vh",overflow:"auto",animation:"slideUp .3s ease"}} onClick={e=>e.stopPropagation()}>
             {/* handle */}
             <div style={{width:36,height:4,borderRadius:2,background:"var(--border)",margin:"0 auto 20px"}}/>
-            <h2 style={{fontSize:20,fontWeight:700,color:"var(--t1)",marginBottom:24,textAlign:"center"}}>Настройки поиска</h2>
+
 
             <div style={{marginBottom:20}}>
               <p style={{fontSize:13,fontWeight:600,color:"var(--t3)",marginBottom:8}}>Ваш пол</p>
@@ -309,12 +309,8 @@ export default function Home(){
             <p style={{fontSize:"clamp(18px,5vw,24px)",fontWeight:700,color:"var(--t1)",marginBottom:4}}>{them}</p>
             <p style={{fontSize:"clamp(28px,7vw,38px)",fontWeight:200,color:"var(--t2)",fontVariantNumeric:"tabular-nums",fontFamily:"'SF Mono',Menlo,monospace",marginBottom:8,letterSpacing:".06em"}}>{fmt(tm)}</p>
             {pmut&&<p style={{fontSize:12,color:"var(--red)",marginBottom:4,padding:"4px 12px",borderRadius:8,background:"var(--red-bg)",fontWeight:500}}>микрофон собеседника выключен</p>}
-            <div style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,background:mut?"var(--red-bg)":"var(--surface2)",marginTop:6,marginBottom:36,border:mut?"1px solid var(--red)":"1px solid var(--border)"}}>
-              <div style={{width:5,height:5,borderRadius:"50%",background:mut?"var(--red)":"var(--green)"}}/>
-              <span style={{fontSize:12,fontWeight:500,color:mut?"var(--red)":"var(--t2)"}}>{mut?"Ваш микрофон выкл":"Ваш микрофон вкл"}</span>
-            </div>
 
-            <div style={{display:"flex",gap:24,alignItems:"center"}}>
+            <div style={{display:"flex",gap:24,alignItems:"center",marginTop:12}}>
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                 <button onClick={()=>setMut(m=>!m)} style={{...gbtn(54),background:mut?"var(--red-bg)":"var(--surface2)",borderColor:mut?"var(--red)":"var(--border)",color:mut?"var(--red)":"var(--t2)"}}>{mut?<MicOff s={22}/>:<Mic s={22}/>}</button>
                 <span style={{fontSize:11,color:"var(--t3)",fontWeight:500}}>{mut?"Вкл":"Выкл"}</span>
@@ -327,6 +323,11 @@ export default function Home(){
                 <button onClick={next} style={gbtn(54)}><Skip s={22}/></button>
                 <span style={{fontSize:11,color:"var(--t3)",fontWeight:500}}>Далее</span>
               </div>
+            </div>
+
+            <div style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,background:mut?"var(--red-bg)":"var(--surface2)",marginTop:20,border:mut?"1px solid var(--red)":"1px solid var(--border)"}}>
+              <div style={{width:5,height:5,borderRadius:"50%",background:mut?"var(--red)":"var(--green)"}}/>
+              <span style={{fontSize:12,fontWeight:500,color:mut?"var(--red)":"var(--t2)"}}>{mut?"Ваш микрофон выкл":"Ваш микрофон вкл"}</span>
             </div>
           </div>
         )}
