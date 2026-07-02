@@ -8,10 +8,7 @@ const MicOff = ({ s = 22 }: { s?: number }) => (<svg width={s} height={s} viewBo
 const Phone = ({ s = 22 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>);
 const PhoneDown = ({ s = 22 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor"><path d="M23.71 16.67C20.66 13.78 16.54 12 12 12S3.34 13.78.29 16.67a1 1 0 0 0 0 1.44l2.83 2.83a1 1 0 0 0 1.41 0l2.83-2.83a1 1 0 0 0 0-1.41L5.9 15.22A9.94 9.94 0 0 1 12 13.5c2.25 0 4.33.66 6.1 1.72l-1.48 1.48a1 1 0 0 0 0 1.41l2.83 2.83a1 1 0 0 0 1.41 0l2.83-2.83a1 1 0 0 0 .02-1.44z"/></svg>);
 const Skip = ({ s = 20 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5,4 15,12 5,20"/><rect x="17" y="5" width="2" height="14" rx="1"/></svg>);
-const X = ({ s = 20 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>);
-const Check = ({ s = 22 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>);
-const Sun = () => (<svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.73 12.73 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>);
-const Moon = () => (<svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>);
+const Edit = ({ s = 14 }: { s?: number }) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>);
 
 /* ═══ BG ═══ */
 const stickerD = [
@@ -30,39 +27,27 @@ const sPos = [
   {x:50,y:5,r:45,s:.4},{x:65,y:35,r:-35,s:.5},{x:3,y:55,r:20,s:.6},{x:94,y:50,r:-15,s:.45},
   {x:28,y:78,r:10,s:.55},{x:75,y:72,r:-25,s:.6},{x:55,y:90,r:35,s:.45},{x:8,y:92,r:-40,s:.4},
 ];
-function Bg() {
-  return (<>
-    <div style={{position:"absolute",inset:0,zIndex:0,pointerEvents:"none",backgroundImage:`linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px)`,backgroundSize:"36px 36px"}}/>
-    <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
-      {sPos.map((p,i)=>(<svg key={i} width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--sticker)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",left:`${p.x}%`,top:`${p.y}%`,transform:`rotate(${p.r}deg) scale(${p.s})`}}><path d={stickerD[i%stickerD.length]}/></svg>))}
-    </div>
-  </>);
-}
-
-
+function Bg(){return(<>
+  <div style={{position:"absolute",inset:0,zIndex:0,pointerEvents:"none",backgroundImage:`linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px)`,backgroundSize:"36px 36px"}}/>
+  <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
+    {sPos.map((p,i)=>(<svg key={i} width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--sticker)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",left:`${p.x}%`,top:`${p.y}%`,transform:`rotate(${p.r}deg) scale(${p.s})`}}><path d={stickerD[i%stickerD.length]}/></svg>))}
+  </div>
+</>);}
 
 /* ═══ Waves ═══ */
-function Waves({on}:{on:boolean}) {
+function Waves({on}:{on:boolean}){
   const h=[8,14,20,16,10];
-  return (<div style={{display:"flex",alignItems:"center",gap:2,height:22}}>
+  return(<div style={{display:"flex",alignItems:"center",gap:2,height:22}}>
     {h.map((v,i)=>(<div key={i} style={{width:2.5,borderRadius:3,background:"var(--green)",height:on?undefined:3,animation:on?`wave .55s ease-in-out ${i*.07}s infinite`:"none",opacity:on?.8:.15,transition:"opacity .3s","--h":`${v}px`} as CSSProperties}/>))}
   </div>);
 }
 
 /* ═══ CONSTANTS ═══ */
 const ICE={iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]};
-type St="idle"|"searching"|"incoming"|"calling"|"connected";
-
-function useRing(){
-  const c=useRef<AudioContext|null>(null);const iv=useRef<ReturnType<typeof setInterval>|null>(null);
-  const stop=useCallback(()=>{if(iv.current){clearInterval(iv.current);iv.current=null;}if(c.current){c.current.close().catch(()=>{});c.current=null;}},[]);
-  const play=useCallback(()=>{stop();try{const ac=new AudioContext();c.current=ac;const beep=()=>{const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=520;g.gain.setValueAtTime(.1,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.4);o.start(ac.currentTime);o.stop(ac.currentTime+.4);};beep();iv.current=setInterval(beep,1800);}catch{}},[stop]);
-  useEffect(()=>()=>stop(),[stop]);return{play,stop};
-}
+type St="idle"|"searching"|"connected";
 
 /* ═══ MAIN ═══ */
 export default function Home(){
-  const [dark,setDark]=useState(false);
   const [st,setSt]=useState<St>("idle");
   const [mut,setMut]=useState(false);
   const [pmut,setPmut]=useState(false);
@@ -71,32 +56,31 @@ export default function Home(){
   const [them,setThem]=useState("");
   const [toast,setToast]=useState("");
   const [pSpk,setPSpk]=useState(false);
+  const [editing,setEditing]=useState(false);
+  const [draft,setDraft]=useState("");
+  const inputRef=useRef<HTMLInputElement>(null);
 
-  const [swipeX,setSwipeX]=useState(0);
-  const [swiping,setSwiping]=useState(false);
-  const swipeStart=useRef(0);
   const sock=useRef<Socket|null>(null);
   const pcr=useRef<RTCPeerConnection|null>(null);
   const strm=useRef<MediaStream|null>(null);
   const aud=useRef<HTMLAudioElement|null>(null);
   const rid=useRef<string|null>(null);
   const tmr=useRef<ReturnType<typeof setInterval>|null>(null);
-  const ring=useRing();
   const micReq=useRef(false);
 
   const fmt=(s:number)=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
-  useEffect(()=>{document.documentElement.setAttribute("data-theme",dark?"dark":"light");},[dark]);
+
   useEffect(()=>{if(micReq.current)return;micReq.current=true;(async()=>{try{strm.current=await navigator.mediaDevices.getUserMedia({audio:true});initSock();}catch{}})();},[]);
 
   function initSock(){
     if(sock.current?.connected)return;const s=io({transports:["websocket","polling"]});sock.current=s;
-    s.on("your_name",({name}:{name:string})=>setMe(name));
+    s.on("your_name",({name}:{name:string})=>{setMe(name);setDraft(name);});
     s.on("searching",()=>setSt("searching"));
-    s.on("ringing",({rid:r,name}:{rid:string;name:string})=>{rid.current=r;setThem(name);setSt("incoming");ring.play();});
-    s.on("calling",({rid:r,name}:{rid:string;name:string})=>{rid.current=r;setThem(name);setSt("calling");});
-    s.on("accepted",async({rid:r,init}:{rid:string;init:boolean})=>{ring.stop();rid.current=r;setSt("connected");startTm();await setupPC(init,r);});
-    s.on("declined",()=>{ring.stop();flash("Звонок отклонён");setSt("idle");rid.current=null;});
-    s.on("ended",({msg}:{msg:string})=>{ring.stop();killPC();stopTm();flash(msg);setSt("idle");rid.current=null;setPmut(false);setPSpk(false);setTm(0);});
+    s.on("connected",async({rid:r,init,peerName}:{rid:string;init:boolean;peerName:string})=>{
+      rid.current=r;setThem(peerName);setSt("connected");startTm();await setupPC(init,r);
+    });
+    s.on("peer_name",({name}:{name:string})=>setThem(name));
+    s.on("ended",({msg}:{msg:string})=>{killPC();stopTm();flash(msg);setSt("idle");rid.current=null;setPmut(false);setPSpk(false);setTm(0);});
     s.on("signal",async({data}:{data:RTCSessionDescriptionInit|{type:string;candidate:RTCIceCandidateInit}})=>{
       if(!pcr.current)return;try{
         if("candidate" in data&&data.type==="ice-candidate"){const d=data as{type:string;candidate:RTCIceCandidateInit};if(d.candidate)await pcr.current.addIceCandidate(new RTCIceCandidate(d.candidate));}
@@ -122,19 +106,16 @@ export default function Home(){
   useEffect(()=>{strm.current?.getAudioTracks().forEach(t=>{t.enabled=!mut;});sock.current?.emit("mute",{m:mut});},[mut]);
 
   const find=()=>{sock.current?.emit("find");};
-  const accept=()=>{ring.stop();setSwipeX(0);sock.current?.emit("accept",{rid:rid.current});};
-  const decline=()=>{ring.stop();setSwipeX(0);sock.current?.emit("decline",{rid:rid.current});setSt("idle");rid.current=null;};
   const end=()=>{sock.current?.emit("end");killPC();stopTm();setTm(0);setSt("idle");rid.current=null;setPmut(false);setPSpk(false);};
   const next=()=>{sock.current?.emit("end");killPC();stopTm();setTm(0);setPmut(false);setPSpk(false);find();};
 
-  const onTS=(e:React.TouchEvent)=>{swipeStart.current=e.touches[0].clientX;setSwiping(true);};
-  const onTM=(e:React.TouchEvent)=>{if(!swiping)return;setSwipeX(e.touches[0].clientX-swipeStart.current);};
-  const onTE=()=>{setSwiping(false);if(swipeX>80)accept();else if(swipeX<-80)decline();else setSwipeX(0);};
-  const onMD=(e:React.MouseEvent)=>{swipeStart.current=e.clientX;setSwiping(true);};
-  const onMM=(e:React.MouseEvent)=>{if(!swiping)return;setSwipeX(e.clientX-swipeStart.current);};
-  const onMU=()=>{if(!swiping)return;setSwiping(false);if(swipeX>80)accept();else if(swipeX<-80)decline();else setSwipeX(0);};
+  function saveName(){
+    const clean=draft.trim().slice(0,24);
+    if(clean&&clean!==me){setMe(clean);sock.current?.emit("set_name",{name:clean});}
+    setEditing(false);
+  }
 
-  useEffect(()=>()=>{stopTm();ring.stop();killPC();strm.current?.getTracks().forEach(t=>t.stop());sock.current?.disconnect();},[]);
+  useEffect(()=>()=>{stopTm();killPC();strm.current?.getTracks().forEach(t=>t.stop());sock.current?.disconnect();},[]);
 
   const press=(e:React.MouseEvent|React.TouchEvent)=>{(e.currentTarget as HTMLElement).style.transform="scale(0.94)";};
   const rel=(e:React.MouseEvent|React.TouchEvent)=>{(e.currentTarget as HTMLElement).style.transform="scale(1)";};
@@ -142,37 +123,50 @@ export default function Home(){
   const cir=(active:boolean):CSSProperties=>({
     width:"clamp(100px,22vw,130px)",height:"clamp(100px,22vw,130px)",borderRadius:"50%",
     border:active?"2.5px solid var(--green)":"2px solid var(--border)",
-    background:active?(dark?"rgba(48,209,88,.08)":"rgba(48,209,88,.06)"):"var(--surface2)",
+    background:active?"var(--green-bg)":"var(--surface)",
     display:"flex",alignItems:"center",justifyContent:"center",transition:"all .3s",
   });
   const rbtn=(bg:string,sz=60):CSSProperties=>({width:sz,height:sz,borderRadius:"50%",border:"none",cursor:"pointer",background:bg,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"transform .15s"});
-  const gbtn=(sz=52):CSSProperties=>({width:sz,height:sz,borderRadius:"50%",border:"1px solid var(--border)",background:"var(--surface2)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--t2)",transition:"all .2s"});
+  const gbtn=(sz=52):CSSProperties=>({width:sz,height:sz,borderRadius:"50%",border:"1px solid var(--border)",background:"var(--surface)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--t2)",transition:"all .2s"});
 
-  /* ═══ RENDER ═══ */
-  return (
-    <div style={{background:"var(--bg)",height:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden",transition:"background .3s"}}>
+  return(
+    <div style={{background:"var(--bg)",height:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden"}}>
       <Bg/>
       <audio ref={aud} autoPlay playsInline style={{display:"none"}}/>
 
-      {/* top right theme */}
-      <button onClick={()=>setDark(d=>!d)} style={{position:"absolute",top:16,right:16,width:44,height:44,borderRadius:22,border:"1px solid var(--border)",background:"var(--surface)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--t3)",zIndex:10}}>{dark?<Sun/>:<Moon/>}</button>
-
-      {/* toast */}
       {toast&&<div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"12px 24px",fontSize:14,fontWeight:600,color:"var(--t1)",zIndex:30,animation:"fadeUp .25s ease"}}>{toast}</div>}
 
-
-
-      {/* ═══ MAIN CENTER ═══ */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:2,width:"100%",padding:"0 24px",maxWidth:420}} key={st}>
 
         {/* ── IDLE ── */}
         {st==="idle"&&(
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeUp .35s ease"}}>
-            <div style={{...cir(false),marginBottom:"clamp(20px,4vh,36px)"}}>
+            <div style={{...cir(false),marginBottom:"clamp(24px,4vh,40px)"}}>
               <span style={{fontSize:"clamp(36px,8vw,48px)",fontWeight:200,color:"var(--t3)",fontFamily:"Georgia,serif",userSelect:"none"}}>?</span>
             </div>
-            <p style={{fontSize:13,color:"var(--t3)",letterSpacing:".08em",textTransform:"uppercase",marginBottom:4}}>Вы</p>
-            <p style={{fontSize:"clamp(18px,5vw,24px)",fontWeight:700,color:"var(--t1)",marginBottom:"clamp(28px,6vh,48px)"}}>{me||"Аноним"}</p>
+
+            {/* Name + edit */}
+            {!editing?(
+              <button onClick={()=>{setDraft(me);setEditing(true);setTimeout(()=>inputRef.current?.focus(),50);}}
+                style={{display:"flex",alignItems:"center",gap:8,background:"none",border:"none",cursor:"pointer",marginBottom:"clamp(32px,6vh,52px)",padding:0}}>
+                <span style={{fontSize:"clamp(18px,5vw,24px)",fontWeight:700,color:"var(--t1)"}}>{me||"Аноним"}</span>
+                <Edit s={14}/>
+              </button>
+            ):(
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:"clamp(32px,6vh,52px)"}}>
+                <input ref={inputRef} value={draft} onChange={e=>setDraft(e.target.value)}
+                  onKeyDown={e=>{if(e.key==="Enter")saveName();if(e.key==="Escape"){setEditing(false);}}}
+                  maxLength={24} placeholder="Введите ник"
+                  style={{
+                    fontSize:18,fontWeight:600,color:"var(--t1)",textAlign:"center",
+                    background:"transparent",border:"none",borderBottom:"2px solid var(--accent)",
+                    outline:"none",padding:"4px 2px",width:"clamp(160px,50vw,240px)",
+                    fontFamily:"inherit",
+                  }}/>
+                <button onClick={saveName} style={{background:"var(--accent)",color:"#fff",border:"none",borderRadius:8,padding:"6px 14px",fontSize:13,fontWeight:600,cursor:"pointer"}}>OK</button>
+              </div>
+            )}
+
             <button onClick={find} onMouseDown={press} onMouseUp={rel} style={{...rbtn("var(--green)",76),width:"clamp(68px,16vw,84px)",height:"clamp(68px,16vw,84px)"}}>
               <Phone s={32}/>
             </button>
@@ -183,66 +177,15 @@ export default function Home(){
         {/* ── SEARCHING ── */}
         {st==="searching"&&(
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeUp .3s ease"}}>
-            <div style={{...cir(false),marginBottom:"clamp(20px,4vh,36px)"}}>
+            <div style={{...cir(false),marginBottom:"clamp(24px,4vh,40px)"}}>
               <div style={{width:26,height:26,borderRadius:"50%",border:"2.5px solid var(--accent)",borderTopColor:"transparent",animation:"spin .7s linear infinite"}}/>
             </div>
             <p style={{fontSize:"clamp(18px,5vw,22px)",fontWeight:700,color:"var(--t1)",marginBottom:8}}>Ищем собеседника</p>
-            <p style={{fontSize:14,color:"var(--t3)",marginBottom:36,textAlign:"center"}}>случайный собеседник</p>
+            <p style={{fontSize:14,color:"var(--t3)",marginBottom:36}}>случайный собеседник</p>
             <div style={{display:"flex",gap:6,marginBottom:36}}>
               {[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:"50%",background:"var(--accent)",animation:`dotPulse 1.4s ease-in-out ${i*.16}s infinite`}}/>)}
             </div>
             <button onClick={end} onMouseDown={press} onMouseUp={rel} style={{padding:"12px 36px",borderRadius:14,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--t1)",fontSize:15,fontWeight:600,cursor:"pointer",transition:"transform .15s"}}>Отменить</button>
-          </div>
-        )}
-
-        {/* ── INCOMING ── */}
-        {st==="incoming"&&(
-          <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeUp .3s ease"}}>
-            <div style={{position:"relative",marginBottom:"clamp(20px,4vh,36px)"}}>
-              <div style={{position:"absolute",inset:-12,borderRadius:"50%",border:"2px solid var(--accent)",animation:"pulseBorder 1.5s ease-in-out infinite"}}/>
-              <div style={{...cir(false),border:"2.5px solid var(--accent)",background:"var(--accent-bg)",animation:"ringShake 2s ease-in-out infinite",color:"var(--accent)"}}>
-                <Phone s={40}/>
-              </div>
-            </div>
-            <p style={{fontSize:12,color:"var(--t3)",letterSpacing:".1em",textTransform:"uppercase",marginBottom:6}}>Входящий звонок</p>
-            <p style={{fontSize:"clamp(20px,5vw,26px)",fontWeight:700,color:"var(--t1)",marginBottom:4}}>{them}</p>
-            <p style={{fontSize:14,color:"var(--t2)",marginBottom:32}}>хочет поговорить</p>
-
-            {/* swipe bar */}
-            <div style={{width:"min(100%,300px)",position:"relative",height:72,borderRadius:36,background:"var(--surface2)",overflow:"hidden",touchAction:"none",cursor:"grab",userSelect:"none"}}
-              onTouchStart={onTS} onTouchMove={onTM} onTouchEnd={onTE} onMouseDown={onMD} onMouseMove={onMM} onMouseUp={onMU} onMouseLeave={onMU}>
-              <div style={{position:"absolute",left:20,top:"50%",transform:"translateY(-50%)",color:"var(--red)",opacity:swipeX<-30?1:.25,transition:"opacity .15s"}}><X s={24}/></div>
-              <div style={{position:"absolute",right:20,top:"50%",transform:"translateY(-50%)",color:"var(--green)",opacity:swipeX>30?1:.25,transition:"opacity .15s"}}><Check s={24}/></div>
-              <div style={{
-                position:"absolute",top:6,left:"50%",transform:`translateX(calc(-50% + ${swipeX}px))`,
-                width:60,height:60,borderRadius:"50%",
-                background:swipeX>50?"var(--green)":swipeX<-50?"var(--red)":"var(--accent)",
-                display:"flex",alignItems:"center",justifyContent:"center",
-                transition:swiping?"none":"all .3s",color:"#fff",
-                boxShadow:"0 2px 12px rgba(0,0,0,.15)",
-              }}><Phone s={24}/></div>
-            </div>
-            <p style={{fontSize:12,color:"var(--t3)",marginTop:10}}>
-              {swipeX>50?"Отпустите — принять":swipeX<-50?"Отпустите — отклонить":"Свайпните для ответа"}
-            </p>
-          </div>
-        )}
-
-        {/* ── CALLING ── */}
-        {st==="calling"&&(
-          <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeUp .3s ease"}}>
-            <div style={{position:"relative",marginBottom:"clamp(20px,4vh,36px)"}}>
-              <div style={{position:"absolute",inset:-10,borderRadius:"50%",border:"2px solid var(--green)",animation:"pulseBorder 2s infinite"}}/>
-              <div style={{...cir(false),border:"2.5px solid var(--green)",background:"var(--green-bg)",color:"var(--green)"}}><Phone s={38}/></div>
-            </div>
-            <p style={{fontSize:12,color:"var(--t3)",letterSpacing:".1em",textTransform:"uppercase",marginBottom:6}}>Вызов</p>
-            <p style={{fontSize:"clamp(20px,5vw,26px)",fontWeight:700,color:"var(--t1)",marginBottom:4}}>{them}</p>
-            <p style={{fontSize:14,color:"var(--t2)",marginBottom:36}}>ожидание ответа...</p>
-            <div style={{display:"flex",gap:6,marginBottom:32}}>
-              {[0,1,2].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"var(--green)",animation:`dotPulse 1.4s ease-in-out ${i*.16}s infinite`}}/>)}
-            </div>
-            <button onClick={end} onMouseDown={press} onMouseUp={rel} style={rbtn("var(--red)",58)}><PhoneDown s={22}/></button>
-            <span style={{fontSize:13,color:"var(--red)",marginTop:10,fontWeight:500}}>Отменить</span>
           </div>
         )}
 
@@ -256,7 +199,7 @@ export default function Home(){
 
             <div style={{display:"flex",gap:24,alignItems:"center",marginTop:12}}>
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-                <button onClick={()=>setMut(m=>!m)} style={{...gbtn(54),background:mut?"var(--red-bg)":"var(--surface2)",borderColor:mut?"var(--red)":"var(--border)",color:mut?"var(--red)":"var(--t2)"}}>{mut?<MicOff s={22}/>:<Mic s={22}/>}</button>
+                <button onClick={()=>setMut(m=>!m)} style={{...gbtn(54),background:mut?"var(--red-bg)":"var(--surface)",borderColor:mut?"var(--red)":"var(--border)",color:mut?"var(--red)":"var(--t2)"}}>{mut?<MicOff s={22}/>:<Mic s={22}/>}</button>
                 <span style={{fontSize:11,color:"var(--t3)",fontWeight:500}}>{mut?"Вкл":"Выкл"}</span>
               </div>
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
@@ -269,7 +212,7 @@ export default function Home(){
               </div>
             </div>
 
-            <div style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,background:mut?"var(--red-bg)":"var(--surface2)",marginTop:20,border:mut?"1px solid var(--red)":"1px solid var(--border)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,background:mut?"var(--red-bg)":"var(--surface)",marginTop:24,border:mut?"1px solid var(--red)":"1px solid var(--border)"}}>
               <div style={{width:5,height:5,borderRadius:"50%",background:mut?"var(--red)":"var(--green)"}}/>
               <span style={{fontSize:12,fontWeight:500,color:mut?"var(--red)":"var(--t2)"}}>{mut?"Ваш микрофон выкл":"Ваш микрофон вкл"}</span>
             </div>
